@@ -5,7 +5,7 @@ const assert = require("assert");
 const url = "mongodb://localhost:27017";
 
 // Database Name
-const dbName = "Fruits";
+const dbName = "fruitsdb";
 
 // Create a new MongoClient
 const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -17,18 +17,27 @@ client.connect(function (err) {
 
     const db = client.db(dbName);
 
-    client.close();
+    insertDocuments(db, function () {
+        client.close();
+    });
 });
 
 const insertDocuments = function (db, callback) {
     // Get the documents collection
-    const collection = db.collection("Fruits");
+    const collection = db.collection("fruits");
     // Insert some documents
-    collection.insertMany([{ a: 1 }, { a: 2 }, { a: 3 }], function (err, result) {
-        assert.strictEqual(err, null);
-        assert.strictEqual(3, result.result.n);
-        assert.strictEqual(3, result.ops.length);
-        console.log("Inserted 3 documents into the collection");
-        callback(result);
-    });
+    collection.insertMany(
+        [
+            { name: "Apple", price: 50, Taste: "Good" },
+            { name: "Apple1", price: 510, Taste: "Pricing" },
+            { name: "Apple2", price: 34, Taste: "Good123" }
+        ],
+        function (err, result) {
+            assert.strictEqual(err, null);
+            assert.strictEqual(3, result.result.n);
+            assert.strictEqual(3, result.ops.length);
+            console.log("Inserted 3 documents into the collection");
+            callback(result);
+        }
+    );
 };
